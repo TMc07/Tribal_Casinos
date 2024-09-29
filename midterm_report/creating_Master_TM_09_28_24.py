@@ -29,14 +29,17 @@ ladlong_CasinoSpec_expandedbyFips = ladlong_CasinoSpec.explode('fips_codes')
 
 ladlong_CasinoSpec_expandedbyFips.to_csv("FipsCode_Expanded_set_09_28_24.csv",index=False)
 
-#Going to expand the above set to the stfip year level
-
-yeardf = pd.DataFrame({'Year': range(1960,2018)})
-
-CasinoSpec_byYear = ladlong_CasinoSpec_expandedbyFips.merge(yeardf,how='cross')
+#Going to add in untreated counties here
 
 
-CasinoSpec_byYear.to_csv('CasinoSpec_byYear.csv',index=False)
+#Going to expand the above set to the stfip year level (had to do this in temp_crossno)
+# decadeSt = pd.read_csv('stateYear.csv',encoding='ISO-8859-1')
+
+# CasinoSpec_byYear = ladlong_CasinoSpec_expandedbyFips.merge(decadeSt,how='cross')
+
+# CasinoSpec_byYear.to_csv('CasinoSpec_byYear.csv',index=False)
+
+CasinoSpec_byYear = pd.read_csv('CasinoSpec_byYear.csv',encoding='ISO-8859-1')
 
 ##Going to start cutting the subsets of data to allow for merges to master
 ##Education here
@@ -157,6 +160,16 @@ Crime_set = Crime_set.rename(columns = {'year':'Year', 'fips_state_county_code':
 CasinoSpec_byYear = CasinoSpec_byYear.rename(columns={'fips_codes':'GeoFIPS'})
 
 #Converting datatypes
+print(CasinoSpec_byYear.dtypes)
+print(education_newgroups.dtypes)
+print(income_longfix.dtypes)
+print(Crime_set.dtypes)
+
+CasinoSpec_byYear = CasinoSpec_byYear.dropna(subset=['Year'])
+
+# Convert the 'Year' column to integers
+CasinoSpec_byYear['Year'] = CasinoSpec_byYear['Year'].astype(int)
+
 CasinoSpec_byYear['GeoFIPS'] = CasinoSpec_byYear['GeoFIPS'].astype(str)
 education_newgroups['GeoFIPS'] = education_newgroups['GeoFIPS'].astype(str)
 income_longfix['GeoFIPS'] = income_longfix['GeoFIPS'].astype(str)
