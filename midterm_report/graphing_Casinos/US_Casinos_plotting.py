@@ -2,14 +2,12 @@ import geopandas as gpd
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Step 1: Load the county shapefile
+
 counties = gpd.read_file("tl_2024_us_county/tl_2024_us_county.shp")
-
-# Step 2: Load your points dataset
-# Assuming you have a CSV or DataFrame with 'longitude', 'latitude', and 'category' columns
 points_df = pd.read_csv("Master_set_09_30_24.csv")
+reservations = gpd.read_file("tl_2024_us_aiannh/tl_2024_us_aiannh.shp")
 
-# Create a GeoDataFrame for your points
+#GeoDataFrame for points
 geometry = gpd.points_from_xy(points_df['long2ndrun'], points_df['lat2ndrun'])
 points_gdf = gpd.GeoDataFrame(points_df, geometry=geometry)
 
@@ -95,8 +93,11 @@ for fips, abbrev in zip(StateFipsList, StateAbrev):
     # Plot points based on revGroup colors
     state_points.plot(ax=ax, marker='o', color=state_points['color'], markersize=10)
 
+reservations.plot(ax=ax, color='lightblue', edgecolor='black', alpha=0.5, linewidth=1)
 # Set title and axis limits
 ax.set_title("Points in Western States by revGroup")
 
 # Save the figure
-plt.savefig("West_States_casinos_plot.png", dpi=300, bbox_inches='tight')
+plt.savefig("West_States_wReservations_Casino_plot.png", dpi=300, bbox_inches='tight')
+
+
