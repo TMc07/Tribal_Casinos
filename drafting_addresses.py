@@ -45,7 +45,7 @@ def get_fips_codes(counties_within_radius):
     return counties_within_radius['GEOID'].tolist()  # Replace 'GEOID' with the correct FIPS column name
 
 # Step 4: Main function to process a CSV of addresses
-def process_addresses_from_csv(input_csv, output_csv, gdf_counties, radius_miles=30):
+def process_addresses_from_csv(input_csv, output_csv, gdf_counties):
     # Read CSV of addresses
     df_addresses = pd.read_csv(input_csv)
     
@@ -59,13 +59,23 @@ def process_addresses_from_csv(input_csv, output_csv, gdf_counties, radius_miles
         
         lat, lon = geocode_address(address)
         if lat is not None and lon is not None:
-            counties_within_radius = get_counties_within_radius(lat, lon, radius_miles, gdf_counties)
-            fips_codes = get_fips_codes(counties_within_radius)
+            # Get counties within 30-mile radius
+            counties_within_30 = get_counties_within_radius(lat, lon, 30, gdf_counties)
+            fips_30 = get_fips_codes(counties_within_30)
+            
+            # Get counties within 100-mile radius
+            counties_within_100 = get_counties_within_radius(lat, lon, 100, gdf_counties)
+            fips_100 = get_fips_codes(counties_within_100)
+            
+            # Remove overlapping counties from 100-mile radius
+            fips_control_counties = list(set(fips_100) - set(fips_30))
+            
             results.append({
                 'Address                                                               ': address,
                 'latitude': lat,
                 'longitude': lon,
-                'fips_codes': fips_codes
+                'fips_codes_30_mile': fips_30,
+                'casino_control_counties': fips_control_counties
             })
         else:
             print(f"Could not geocode address: {address}")
@@ -73,7 +83,8 @@ def process_addresses_from_csv(input_csv, output_csv, gdf_counties, radius_miles
                 'Address                                                               ': address,
                 'latitude': None,
                 'longitude': None,
-                'fips_codes': None
+                'fips_codes_30_mile': None,
+                'casino_control_counties': None
             })
 
     # Convert results to a DataFrame and save to CSV
