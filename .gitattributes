@@ -1,0 +1,5 @@
+midterm_report/graphing_Casinos/tl_2024_us_county/tl_2024_us_county.shp filter=lfs diff=lfs merge=lfs -text
+Crime_1960_2017.csv filter=lfs diff=lfs merge=lfs -text
+midterm_report/CasinoSpec_byYear.csv filter=lfs diff=lfs merge=lfs -text
+midterm_report/Master_set_09_28_24.csv filter=lfs diff=lfs merge=lfs -text
+midterm_report/Master_set_11_18_24.csv filter=lfs diff=lfs merge=lfs -text
